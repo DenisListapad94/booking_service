@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from .models import Person
 from django.shortcuts import render
 from django.views import View
 
@@ -74,5 +75,15 @@ def user_comment_view(request):
     return render(
         request=request,
         template_name="user_comment.html",
+        context=context
+    )
+
+def persons_view(request):
+    context = {
+        "persons" : Person.objects.all()
+    }
+    return render(
+        request=request,
+        template_name="persons.html",
         context=context
     )

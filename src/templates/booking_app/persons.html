@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}user comment{% endblock %}
+
+{% block content %}
+
+    <h2> some user comment wil be here</h2>
+
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">first_name</th>
+      <th scope="col">last_name</th>
+        <th scope="col">age</th>
+        <th scope="col">sex</th>
+
+    </tr>
+  </thead>
+  <tbody>
+  {% for person in persons %}
+    <tr>
+      <th scope="row">{{person.id}}</th>
+      <td>{{person.first_name}}</td>
+      <td>{{person.last_name}}</td>
+        <td>{{person.age}}</td>
+      <td>{{person.sex}}</td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+
+{% endblock %}
