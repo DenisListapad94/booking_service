@@ -1,22 +1,7 @@
 from django.db import models
 
-class Person(models.Model):
-    SEX_PERSON = {
-        "m": "male",
-        "f": "female",
-    }
-    first_name = models.CharField(max_length=30, null=True)
-    last_name = models.CharField(max_length=50)
-    age = models.PositiveIntegerField()
-    sex = models.CharField(max_length=1, choices=SEX_PERSON)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f" {self.first_name} {self.last_name}"
-
-
-class HotelOwner(models.Model):
+class User(models.Model):
     SEX_PERSON = {
         "m": "male",
         "f": "female",
@@ -24,25 +9,38 @@ class HotelOwner(models.Model):
     first_name = models.CharField(max_length=30, null=True)
     last_name = models.CharField(max_length=50, null=True)
     age = models.PositiveIntegerField(null=True)
-    sex = models.CharField(max_length=1, choices=SEX_PERSON)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    sex = models.CharField(max_length=1, choices=SEX_PERSON,null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    class Meta:
+        indexes = [
+            models.Index(fields=["first_name"], name="first_name_idx"),
+            models.Index(fields=["age"], name="age_idx"),
+            models.Index(fields=["sex"], name="sex_idx"),
+        ]
 
     def __str__(self):
         return f" {self.first_name} {self.last_name}"
 
 
+class Person(User):
+    guest_rating = models.IntegerField(null=True)
+
+
+class HotelOwner(User):
+    owner_exp_status = models.IntegerField(null=True)
+
+
 class Hobby(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, null=True)
     detail = models.CharField(max_length=200, null=True)
     owners = models.ManyToManyField(
-        to="HotelOwner",
+        to="User",
         related_name="hobbies"
     )
-    persons = models.ManyToManyField(
-        to="Person",
-        related_name="hobbies"
-    )
+
+    def __str__(self):
+        return f" {self.name}"
 
 
 class Profile(models.Model):
@@ -50,13 +48,7 @@ class Profile(models.Model):
     id_card_number = models.IntegerField(null=True)
     serial = models.CharField(null=True, max_length=30)
     persons = models.OneToOneField(
-        to="Person",
-        on_delete=models.CASCADE,
-        null=True,
-        related_name="profile"
-    )
-    hotel_owners = models.OneToOneField(
-        to="HotelOwner",
+        to="User",
         on_delete=models.CASCADE,
         null=True,
         related_name="profile"
@@ -82,7 +74,7 @@ class BookInfo(models.Model):
 
 
 class Hotel(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, null=True)
     address = models.CharField(max_length=100, null=True)
     stars = models.IntegerField(null=True)
     rating = models.FloatField(null=True)
@@ -97,9 +89,16 @@ class Hotel(models.Model):
         return f" {self.name}"
 
 
-class HotelsComment(models.Model):
+class Comment(models.Model):
     comment = models.CharField(max_length=200, null=True)
-    comment_time = models.DateTimeField(auto_now_add=True)
+    comment_time = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class HotelsComment(Comment):
+    hotel_rating = models.PositiveIntegerField(null=True)
     hotels = models.ForeignKey(
         to="Hotel",
         on_delete=models.SET_NULL,
@@ -111,6 +110,25 @@ class HotelsComment(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name="hotel_comments"
+    )
+
+    def __str__(self):
+        return f" {self.comment}"
+
+
+class PersonComment(Comment):
+    person_rating = models.PositiveIntegerField(null=True)
+    hotels = models.ForeignKey(
+        to="Hotel",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="person_comments"
+    )
+    persons = models.ForeignKey(
+        to="Person",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="person_comments"
     )
 
     def __str__(self):

@@ -14,6 +14,8 @@
       <th scope="col">last_name</th>
         <th scope="col">age</th>
         <th scope="col">sex</th>
+      <th scope="col">hobbies</th>
+      <th scope="col">comments</th>
 
     </tr>
   </thead>
@@ -25,6 +27,16 @@
       <td>{{person.last_name}}</td>
         <td>{{person.age}}</td>
       <td>{{person.sex}}</td>
+      <td>
+      {% for hobby in person.hobbies.all %}
+        {{hobby.name}}
+        {% endfor%}
+      </td>
+            <td>
+      {% for comment in person.hotel_comments.all %}
+        {{comment.comment}}
+        {% endfor%}
+      </td>
     </tr>
   {% endfor %}
 

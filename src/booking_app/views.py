@@ -80,7 +80,8 @@ def user_comment_view(request):
 
 def persons_view(request):
     context = {
-        "persons" : Person.objects.all()
+        # "persons": Person.objects.prefetch_related("hotel_comments").prefetch_related("hobbies")
+        "persons" : Person.objects.filter(sex="f").order_by("-age","created_at").prefetch_related("hotel_comments").prefetch_related("hobbies")[:20]
     }
     return render(
         request=request,
