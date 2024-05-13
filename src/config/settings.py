@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'django_extensions',
-    'booking_app',
+    'booking_app.apps.BookingAppConfig',
 ]
 
 MIDDLEWARE = [

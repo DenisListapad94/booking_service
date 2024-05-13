@@ -1,4 +1,7 @@
+from django.core.signals import request_finished
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class User(models.Model):
@@ -9,9 +12,10 @@ class User(models.Model):
     first_name = models.CharField(max_length=30, null=True)
     last_name = models.CharField(max_length=50, null=True)
     age = models.PositiveIntegerField(null=True)
-    sex = models.CharField(max_length=1, choices=SEX_PERSON,null=True)
+    sex = models.CharField(max_length=1, choices=SEX_PERSON, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+
     class Meta:
         indexes = [
             models.Index(fields=["first_name"], name="first_name_idx"),
@@ -30,6 +34,10 @@ class Person(User):
 class HotelOwner(User):
     owner_exp_status = models.IntegerField(null=True)
 
+    class Meta:
+        verbose_name = "Владельцы"
+        verbose_name_plural = "Владельцы"
+
 
 class Hobby(models.Model):
     name = models.CharField(max_length=30, null=True)
@@ -41,6 +49,10 @@ class Hobby(models.Model):
 
     def __str__(self):
         return f" {self.name}"
+
+    class Meta:
+        verbose_name = "Hobbies"
+        verbose_name_plural = "Hobbies"
 
 
 class Profile(models.Model):
@@ -74,15 +86,16 @@ class BookInfo(models.Model):
 
 
 class Hotel(models.Model):
-    name = models.CharField(max_length=50, null=True)
-    address = models.CharField(max_length=100, null=True)
-    stars = models.IntegerField(null=True)
-    rating = models.FloatField(null=True)
+    name = models.CharField(max_length=50, null=True, verbose_name="название")
+    address = models.CharField(max_length=100, null=True, verbose_name="адрес")
+    stars = models.IntegerField(null=True, verbose_name="количество звёзд")
+    rating = models.FloatField(null=True, verbose_name="рейтинг")
     owners = models.ForeignKey(
         to="HotelOwner",
         on_delete=models.SET_NULL,
         null=True,
         related_name="hotels",
+        verbose_name="владелец"
     )
 
     def __str__(self):
@@ -133,3 +146,16 @@ class PersonComment(Comment):
 
     def __str__(self):
         return f" {self.comment}"
+
+
+@receiver(request_finished)
+def my_callback(sender, **kwargs):
+    print("Request finished!")
+
+
+@receiver(post_save, sender=Hobby)
+def my_hobby_signal(sender, instance, created, **kwargs):
+    queryset = User.objects.order_by("-age")[:50]
+    if created:
+        for user in queryset:
+            user.hobbies.add(instance)
