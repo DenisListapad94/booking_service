@@ -1,0 +1,22 @@
+
+
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block title %}My amazing booking app{% endblock %}
+
+{% block content %}
+
+    <h2> some home page form  add hotel</h2>
+
+    <form action="/booking/hotels_form_add" method="POST">
+        {% csrf_token %}
+        {{ form.as_table }}
+<!--    <label for="name_hotel">hotel name:</label>-->
+<!--    <input id="name_hotel" type="text" name="name_hotel" value="">-->
+    <input type="submit" value="OK">
+    </form>
+
+{% endblock %}

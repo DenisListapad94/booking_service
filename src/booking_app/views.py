@@ -1,7 +1,10 @@
-from django.http import HttpResponse
-from .models import Person
+from django.db import transaction
+from django.http import HttpResponse, HttpResponseRedirect,HttpResponseForbidden
 from django.shortcuts import render
 from django.views import View
+from django.urls import reverse
+from .forms import HotelForm
+from .models import Person, User, Hobby, Hotel
 
 
 # function base view
@@ -78,13 +81,55 @@ def user_comment_view(request):
         context=context
     )
 
+
 def persons_view(request):
     context = {
         # "persons": Person.objects.prefetch_related("hotel_comments").prefetch_related("hobbies")
-        "persons" : Person.objects.filter(sex="f").order_by("-age","created_at").prefetch_related("hotel_comments").prefetch_related("hobbies")[:20]
+        "persons": Person.objects.filter(sex="f").order_by("-age", "created_at").prefetch_related(
+            "hotel_comments").prefetch_related("hobbies")[:20]
     }
     return render(
         request=request,
         template_name="persons.html",
+        context=context
+    )
+
+
+def hotels_view_delete(request):
+    with transaction.atomic():
+        user = User.objects.get(pk=1)
+        # import pdb;pdb.set_trace()
+        user.first_name = "Ann"
+        user.save()
+        hobby = Hobby.objects.get(pk=22)
+
+        # print(user)
+    return HttpResponse(f"<h1></h1>")
+
+
+def hotels_form(request):
+    if request.method == "POST":
+
+        hotel_form = HotelForm(request.POST)
+        if hotel_form.is_valid():
+            Hotel.objects.create(
+                name=request.POST["name"],
+                stars=request.POST["stars"]
+            )
+            return HttpResponseRedirect(reverse("persons"))
+        else:
+
+            hotel_form = HotelForm()
+            return  HttpResponseForbidden(request)
+
+
+    else:
+        hotel_form = HotelForm()
+    context = {
+        "form": hotel_form
+    }
+    return render(
+        request=request,
+        template_name="hotel_add_form.html",
         context=context
     )

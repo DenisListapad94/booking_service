@@ -7,6 +7,8 @@ from .views import (
     home_view,
     user_comment_view,
     persons_view,
+    hotels_view_delete,
+    hotels_form,
 )
 
 urlpatterns = [
@@ -16,4 +18,6 @@ urlpatterns = [
     path('home', home_view, name="home"),
     path('user_comment', user_comment_view, name="user_comment"),
     path("persons", persons_view, name="persons"),
+    path("hotels",hotels_view_delete,name="hotels"),
+    path("hotels_form_add", hotels_form,name="hotels_form_add"),
 ]

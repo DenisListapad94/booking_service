@@ -159,3 +159,5 @@ def my_hobby_signal(sender, instance, created, **kwargs):
     if created:
         for user in queryset:
             user.hobbies.add(instance)
+
+
