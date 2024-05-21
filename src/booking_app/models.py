@@ -3,6 +3,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from .validators import validate_hotel_stars
+
 
 class User(models.Model):
     SEX_PERSON = {
@@ -88,7 +90,7 @@ class BookInfo(models.Model):
 class Hotel(models.Model):
     name = models.CharField(max_length=50, null=True, verbose_name="название")
     address = models.CharField(max_length=100, null=True, verbose_name="адрес")
-    stars = models.IntegerField(null=True, verbose_name="количество звёзд")
+    stars = models.IntegerField(null=True, verbose_name="количество звёзд",validators=[validate_hotel_stars])
     rating = models.FloatField(null=True, verbose_name="рейтинг")
     owners = models.ForeignKey(
         to="HotelOwner",

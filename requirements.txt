@@ -6,7 +6,8 @@ django-extensions==3.2.3
 pillow==10.3.0
 Faker==25.0.1
 django-debug-toolbar==4.3.0
-
+django-crispy-forms==2.1
+crispy-bootstrap5==2024.2
 
 
 

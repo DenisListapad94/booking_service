@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect,HttpResponseForbidden
 from django.shortcuts import render
 from django.views import View
 from django.urls import reverse
-from .forms import HotelForm
+from .forms import HotelModelForm
 from .models import Person, User, Hobby, Hotel
 
 
@@ -108,25 +108,17 @@ def hotels_view_delete(request):
 
 
 def hotels_form(request):
+
     if request.method == "POST":
 
-        hotel_form = HotelForm(request.POST)
-        if hotel_form.is_valid():
-            Hotel.objects.create(
-                name=request.POST["name"],
-                stars=request.POST["stars"]
-            )
+        form = HotelModelForm(request.POST)
+        if form.is_valid():
+            form.save()
             return HttpResponseRedirect(reverse("persons"))
-        else:
-
-            hotel_form = HotelForm()
-            return  HttpResponseForbidden(request)
-
-
     else:
-        hotel_form = HotelForm()
+        form = HotelModelForm()
     context = {
-        "form": hotel_form
+        "form": form
     }
     return render(
         request=request,
