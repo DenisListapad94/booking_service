@@ -1,10 +1,13 @@
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseRedirect,HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views import View
 from django.urls import reverse
+from django.views import View
+from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
+
 from .forms import HotelModelForm
-from .models import Person, User, Hobby, Hotel
+from .models import Person, User, Hobby, HotelsComment
 
 
 # function base view
@@ -82,6 +85,18 @@ def user_comment_view(request):
     )
 
 
+class UserCommentListView(ListView):
+    template_name = "user_comment.html"
+    model = HotelsComment
+    # queryset = HotelsComment.objects.all()
+    context_object_name = "comments"
+    paginate_by = 20
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["comments"] = HotelsComment.objects.all()[:10]#comments
+    #     return context
+
+
 def persons_view(request):
     context = {
         # "persons": Person.objects.prefetch_related("hotel_comments").prefetch_related("hobbies")
@@ -108,7 +123,6 @@ def hotels_view_delete(request):
 
 
 def hotels_form(request):
-
     if request.method == "POST":
 
         form = HotelModelForm(request.POST)
@@ -125,3 +139,9 @@ def hotels_form(request):
         template_name="hotel_add_form.html",
         context=context
     )
+
+
+class HotelFormView(CreateView):
+    template_name = "hotel_add_form.html"
+    form_class = HotelModelForm
+    reverse_lazy = "persons"

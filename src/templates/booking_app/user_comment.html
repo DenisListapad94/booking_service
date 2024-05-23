@@ -12,17 +12,17 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">user_id</th>
-      <th scope="col">name</th>
       <th scope="col">comment</th>
+      <th scope="col">time</th>
     </tr>
   </thead>
   <tbody>
   {% for comment in comments %}
     <tr>
-      <th scope="row">{{comment.number}}</th>
-      <td>{{comment.user_id}}</td>
-      <td>{{comment.name}}</td>
+      <th scope="row">{{comment.id}}</th>
+      <td>{{comment.id}}</td>
       <td>{{comment.comment}}</td>
+      <td>{{comment.comment_time}}</td>
     </tr>
   {% endfor %}
 

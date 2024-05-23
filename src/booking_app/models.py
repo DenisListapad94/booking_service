@@ -150,9 +150,9 @@ class PersonComment(Comment):
         return f" {self.comment}"
 
 
-@receiver(request_finished)
-def my_callback(sender, **kwargs):
-    print("Request finished!")
+# @receiver(request_finished)
+# def my_callback(sender, **kwargs):
+#     print("Request finished!")
 
 
 @receiver(post_save, sender=Hobby)
