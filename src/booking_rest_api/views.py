@@ -4,7 +4,8 @@ from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from booking_app.models import HotelsComment
-
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication,TokenAuthentication
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from .serializers import UserModelSerializer
 
 
@@ -45,6 +46,8 @@ class SomeDataViewClass(APIView):
 
 
 class UserListApiView(generics.ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
     #
@@ -56,6 +59,7 @@ class UserListApiView(generics.ListCreateAPIView):
 
 #
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
     #

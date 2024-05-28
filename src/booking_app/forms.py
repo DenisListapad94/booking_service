@@ -14,3 +14,4 @@ class HotelModelForm(forms.ModelForm):
         widgets = {
             "address": forms.Textarea(attrs={"size": 500, 'class': 'special', "required": False})
         }
+

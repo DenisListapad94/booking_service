@@ -5,10 +5,11 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from .forms import HotelModelForm
 from .models import Person, User, Hobby, HotelsComment
-
+from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
 
 # function base view
 def some_view(request, some_int, some_str):
@@ -85,7 +86,9 @@ def user_comment_view(request):
     )
 
 
-class UserCommentListView(ListView):
+class UserCommentListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
+    permission_required = ["booking_app.view_hotelscomment"]
+    login_url = "/admin/login/"
     template_name = "user_comment.html"
     model = HotelsComment
     # queryset = HotelsComment.objects.all()
@@ -95,8 +98,8 @@ class UserCommentListView(ListView):
     #     context = super().get_context_data(**kwargs)
     #     context["comments"] = HotelsComment.objects.all()[:10]#comments
     #     return context
-
-
+@permission_required("booking_app.view_person",login_url="/admin/login/")
+@login_required(login_url="/admin/login/")
 def persons_view(request):
     context = {
         # "persons": Person.objects.prefetch_related("hotel_comments").prefetch_related("hobbies")
