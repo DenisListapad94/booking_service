@@ -1,6 +1,7 @@
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import CreateView
@@ -98,6 +99,7 @@ class UserCommentListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
     #     context = super().get_context_data(**kwargs)
     #     context["comments"] = HotelsComment.objects.all()[:10]#comments
     #     return context
+# @cache_page(timeout=60)
 @permission_required("booking_app.view_person",login_url="/admin/login/")
 @login_required(login_url="/admin/login/")
 def persons_view(request):
@@ -106,6 +108,8 @@ def persons_view(request):
         "persons": Person.objects.filter(sex="f").order_by("-age", "created_at").prefetch_related(
             "hotel_comments").prefetch_related("hobbies")[:20]
     }
+    # from time import sleep
+    # sleep(10)
     return render(
         request=request,
         template_name="persons.html",

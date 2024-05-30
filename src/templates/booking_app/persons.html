@@ -1,8 +1,11 @@
 {% extends "base.html" %}
+{% load cache %}
+
 
 {% block title %}user comment{% endblock %}
 
 {% block content %}
+{% cache 60 sidebar %}
 
     <h2> some user comment wil be here</h2>
 
@@ -42,5 +45,7 @@
 
   </tbody>
 </table>
+{% endcache %}
+
 
 {% endblock %}

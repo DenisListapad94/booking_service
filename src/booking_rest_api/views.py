@@ -46,7 +46,7 @@ class SomeDataViewClass(APIView):
 
 
 class UserListApiView(generics.ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
