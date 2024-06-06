@@ -1,16 +1,18 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
+
 from .forms import HotelModelForm
-from .models import Person, User, Hobby, HotelsComment
-from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
+from .models import Person, User, Hobby, HotelsComment, Hotel
+
 
 # function base view
 def some_view(request, some_int, some_str):
@@ -77,8 +79,14 @@ comments = [
 
 
 def user_comment_view(request):
+    comments = HotelsComment.objects.all()
+
+    paginator = Paginator(comments, 10)  # Show 20 contacts per page.
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
     context = {
-        "comments": comments
+        "page_obj": page_obj
     }
     return render(
         request=request,
@@ -87,7 +95,7 @@ def user_comment_view(request):
     )
 
 
-class UserCommentListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
+class UserCommentListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     permission_required = ["booking_app.view_hotelscomment"]
     login_url = "/admin/login/"
     template_name = "user_comment.html"
@@ -99,8 +107,10 @@ class UserCommentListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
     #     context = super().get_context_data(**kwargs)
     #     context["comments"] = HotelsComment.objects.all()[:10]#comments
     #     return context
+
+
 # @cache_page(timeout=60)
-@permission_required("booking_app.view_person",login_url="/admin/login/")
+@permission_required("booking_app.view_person", login_url="/admin/login/")
 @login_required(login_url="/admin/login/")
 def persons_view(request):
     context = {
@@ -116,6 +126,15 @@ def persons_view(request):
         context=context
     )
 
+def show_hotels(request):
+    context = {
+        "hotels":Hotel.objects.all()
+    }
+    return render(
+        request=request,
+        template_name="hotels.html",
+        context=context
+    )
 
 def hotels_view_delete(request):
     with transaction.atomic():
@@ -131,9 +150,9 @@ def hotels_view_delete(request):
 
 def hotels_form(request):
     if request.method == "POST":
-
-        form = HotelModelForm(request.POST)
+        form = HotelModelForm(request.POST,request.FILES)
         if form.is_valid():
+
             form.save()
             return HttpResponseRedirect(reverse("persons"))
     else:
@@ -148,7 +167,7 @@ def hotels_form(request):
     )
 
 
-class HotelFormView(CreateView):
-    template_name = "hotel_add_form.html"
-    form_class = HotelModelForm
-    reverse_lazy = "persons"
+# class HotelFormView(CreateView):
+#     template_name = "hotel_add_form.html"
+#     form_class = HotelModelForm
+#     reverse_lazy = "persons"

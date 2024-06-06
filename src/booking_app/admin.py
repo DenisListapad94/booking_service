@@ -1,11 +1,20 @@
 from django.contrib import admin
-
+from django.utils.safestring import mark_safe
 from .models import (
     Person, Profile,
     Hotel, HotelsComment,
     BookInfo, Hobby, User,
     HotelOwner, PersonComment
 )
+
+
+
+@admin.display(description='фото')
+def get_html_photo(objects):
+    if objects.photo:
+        return mark_safe(f'<img src={objects.photo.url} width=50>')
+
+
 
 
 class BookInfoInline(admin.StackedInline):
@@ -24,7 +33,7 @@ def make_five_stars(modeladmin, request, queryset):
 
 # @admin.register(Hotel)
 class HotelAdmin(admin.ModelAdmin):
-    list_display = ["name", "address", "stars", "rating", "view_rating_stars", "owners"]
+    list_display = ["name", "address", "stars", "rating", "view_rating_stars", "description",get_html_photo]
     list_display_links = ["name", "address"]
     # fields = [("name", "address"), ("stars", "rating"),"owners"]
     # exclude = ["rating"]

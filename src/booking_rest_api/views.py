@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from  django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework import generics
 from rest_framework import mixins
 from rest_framework.response import Response
@@ -6,6 +8,8 @@ from rest_framework.views import APIView
 from booking_app.models import HotelsComment
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication,TokenAuthentication
 from rest_framework.permissions import IsAuthenticated,AllowAny
+
+from .paginations import CustomPagination
 from .serializers import UserModelSerializer
 
 
@@ -50,6 +54,11 @@ class UserListApiView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
+    filter_backends = [DjangoFilterBackend,SearchFilter]
+    # pagination_class = [CustomPagination]
+    filterset_fields = ['is_superuser', 'is_staff','first_name']
+    search_fields = ['first_name', 'last_name', "username"]
+    ordering_fields = ['username', 'first_name',"last_name"]
     #
     # def get(self, request, *args, **kwargs):
     #     return self.list(request, *args, **kwargs)

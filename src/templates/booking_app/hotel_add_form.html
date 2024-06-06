@@ -11,7 +11,7 @@
 {% block content %}
 
 
-    <form action="/booking/hotels_form_add" method="POST">
+    <form enctype="multipart/form-data"  action="/booking/hotels_form_add" method="POST">
 
         {% csrf_token %}
         {{ form | crispy }}

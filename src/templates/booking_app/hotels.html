@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+
+{% block title %}hotels{% endblock %}
+
+{% block content %}
+
+
+    <table class="table">
+  <thead>
+    <tr>
+             <th scope="col">id</th>
+      <th scope="col">name</th>
+      <th scope="col">address</th>
+      <th scope="col">stars</th>
+        <th scope="col">description</th>
+        <th scope="col">photo</th>
+
+    </tr>
+  </thead>
+  <tbody>
+  {% for hotel in hotels %}
+    <tr>
+      <th scope="row">{{hotel.id}}</th>
+      <td>{{hotel.name}}</td>
+      <td>{{hotel.address}}</td>
+        <td>{{hotel.stars}}</td>
+      <td>{{hotel.description}}</td>
+
+<td>
+    {% if hotel.photo %}
+        <img style="max-height: 100px" src="{{ hotel.photo.url }}"/>
+    {% endif %}</td>
+</tr>
+
+
+  {% endfor %}
+
+  </tbody>
+</table>
+
+
+{% endblock %}

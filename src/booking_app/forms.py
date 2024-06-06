@@ -10,8 +10,8 @@ from .models import Hotel
 class HotelModelForm(forms.ModelForm):
     class Meta:
         model = Hotel
-        fields = ["name", "stars", "address"]
+        fields = ["name", "stars", "description","photo"]
         widgets = {
-            "address": forms.Textarea(attrs={"size": 500, 'class': 'special', "required": False})
+            "description": forms.Textarea(attrs={"size": 500, 'class': 'special', "required": False})
         }
 
