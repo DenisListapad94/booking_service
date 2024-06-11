@@ -22,3 +22,5 @@ urlpatterns = [
     path("hotels",show_hotels,name="hotels"),
     path("hotels_form_add", hotels_form,name="hotels_form_add"),
 ]
+
+

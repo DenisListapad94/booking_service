@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost","127.0.0.1","testserver"]
 
 # Application definition
 
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'rest_framework_simplejwt',
-    'django_filters'
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +108,11 @@ DATABASES = {
         "NAME": os.environ.get("DB_NAME"),
         "HOST": os.environ.get("DB_HOST"),
         "PORT": os.environ.get("DB_PORT"),
-        "PASSWORD": os.environ.get("DB_PASS")
+        "PASSWORD": os.environ.get("DB_PASS"),
+        "TEST": {
+            "NAME": os.environ.get("TEST_DATABASE_NAME"),
+        },
+
     },
 }
 # Password validation

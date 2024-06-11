@@ -132,6 +132,10 @@ class HotelsComment(Comment):
     def __str__(self):
         return f" {self.comment}"
 
+class PersonQueue(models.Model):
+    value = models.PositiveIntegerField(null=True)
+    def __str__(self):
+        return f" {self.value}"
 
 class PersonComment(Comment):
     person_rating = models.PositiveIntegerField(null=True)
