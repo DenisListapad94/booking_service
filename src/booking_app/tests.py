@@ -1,8 +1,14 @@
-import unittest
-from django.test import TestCase,Client
+from django.test import TestCase, Client
 from .queue import Queue
 import random
 from .models import Hotel
+import random
+
+from django.test import TestCase, Client
+
+from .models import Hotel
+from .queue import Queue
+
 
 # class TestStringMethods(unittest.TestCase):
 #
@@ -39,7 +45,7 @@ class TestQueue(TestCase):
 
     def test_add_queue_milti_value(self):
         q = Queue(strategy="FIFO")
-        test_values  = [4,3,2]
+        test_values = [4, 3, 2]
 
         for ind in range(len(test_values)):
             q.add(test_values[ind])
@@ -53,7 +59,7 @@ class TestQueue(TestCase):
         first_value = 44
         q.add(first_value)
         for i in range(20):
-            value = random.randint(1,10)
+            value = random.randint(1, 10)
             q.add(value)
 
         get_value = q.pop()
@@ -68,24 +74,67 @@ class TestQueue(TestCase):
         get_value = q.pop()
         self.assertIsNone(get_value)
 
+
 class TestHotelView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.name = "TestHotel"
+        self.stars = 5
+        self.description = "some description for TestHotel"
+        self.hotel = Hotel.objects.create(
+            name=self.name,
+            stars=self.stars,
+            description = self.description
+        )
     def test_hotel_view(self):
-        name = "TestHotel"
-        stars = 5
-        Hotel.objects.create(name=name,stars=stars)
         path = "/booking/hotels"
-        client = Client()
-        response = client.get(path=path)
+        response = self.client.get(path=path)
         hotels = response.context["hotels"]
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(hotels),1)
-        self.assertEqual(hotels[0].name, name)
-        self.assertEqual(hotels[0].stars, stars)
+        self.assertEqual(len(hotels), 1)
+        self.assertEqual(hotels[0].name, self.name)
+        self.assertEqual(hotels[0].stars, self.stars)
         self.assertEqual(hotels[0].id, 1)
 
+    def test_create_hotel_instance(self):
+        self.assertEqual(self.hotel.id, 1)
+        self.assertEqual(self.hotel.name, self.name)
+        self.assertEqual(self.hotel.stars, self.stars)
+        self.assertEqual(self.hotel._meta.get_field('name').verbose_name, "название")
+        self.assertEqual(self.hotel._meta.get_field('name').max_length, 50)
+        self.assertEqual(self.hotel._meta.get_field('name').null, True)
+
+    def test_create_hotel_form(self):
+
+        path = "/booking/hotels_form_add"
+        response = self.client.post(
+            path=path,
+            data={
+                "name": self.name,
+                "stars": self.stars,
+                "description": self.description,
+            })
+
+        hotel = Hotel.objects.get(id=1)
+        self.assertEqual(hotel.name, self.name)
+        self.assertEqual(hotel.stars, self.stars)
+        self.assertEqual(hotel.description, self.description)
+
+    def tearDown(self):
+        pass
+        # hotels = Hotel.objects.all()
+        # for hotel in hotels:
+        #     hotel.delete()
 
 
-
+        # hotel = Hotel.objects.create(
+        #     name=name,
+        #     stars=stars,
+        #     description=description
+        # )
+        # self.assertEqual(hotel.id, 1)
+        # self.assertEqual(hotel.name, name)
+        # self.assertEqual(hotel.stars, stars)
 
 # if __name__ == '__main__':
 #     unittest.main()
