@@ -1,3 +1,5 @@
+import base64
+from .tasks import create_photo
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -9,6 +11,8 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
+import requests
+from django.core.files.base import ContentFile
 
 from .forms import HotelModelForm
 from .models import Person, User, Hobby, HotelsComment, Hotel
@@ -131,7 +135,7 @@ def show_hotels(request):
         "hotels":Hotel.objects.all()
     }
     from config.celery import debug_task
-    debug_task.delay(15)
+    # debug_task.delay(15)
 
     return render(
         request=request,
@@ -153,10 +157,14 @@ def hotels_view_delete(request):
 
 def hotels_form(request):
     if request.method == "POST":
+
         form = HotelModelForm(request.POST,request.FILES)
         if form.is_valid():
+            if 'photo' in form.files:
+                form.save()
+            else:
+                create_photo.delay(form.cleaned_data)
 
-            form.save()
             return HttpResponseRedirect(reverse("persons"))
     else:
         form = HotelModelForm()

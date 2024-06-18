@@ -1,10 +1,13 @@
+from base64 import b64encode
+from unittest.mock import MagicMock,patch
+
 from django.test import TestCase, Client
 from .queue import Queue
 import random
 from .models import Hotel
 import random
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 
 from .models import Hotel
 from .queue import Queue
@@ -81,11 +84,11 @@ class TestHotelView(TestCase):
         self.name = "TestHotel"
         self.stars = 5
         self.description = "some description for TestHotel"
-        self.hotel = Hotel.objects.create(
-            name=self.name,
-            stars=self.stars,
-            description = self.description
-        )
+        # self.hotel = Hotel.objects.create(
+        #     name=self.name,
+        #     stars=self.stars,
+        #     description = self.description
+        # )
     def test_hotel_view(self):
         path = "/booking/hotels"
         response = self.client.get(path=path)
@@ -103,9 +106,13 @@ class TestHotelView(TestCase):
         self.assertEqual(self.hotel._meta.get_field('name').verbose_name, "название")
         self.assertEqual(self.hotel._meta.get_field('name').max_length, 50)
         self.assertEqual(self.hotel._meta.get_field('name').null, True)
-
-    def test_create_hotel_form(self):
-
+    @patch('booking_app.tasks.requests')
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
+    def test_create_hotel_form(self,fake_requests):
+        img_content = b'12345678'
+        fake_response = MagicMock()
+        fake_requests.post.return_value = fake_response
+        fake_response.json.return_value = {'images': [b64encode(img_content)]}
         path = "/booking/hotels_form_add"
         response = self.client.post(
             path=path,
@@ -115,10 +122,13 @@ class TestHotelView(TestCase):
                 "description": self.description,
             })
 
+
         hotel = Hotel.objects.get(id=1)
+
         self.assertEqual(hotel.name, self.name)
         self.assertEqual(hotel.stars, self.stars)
         self.assertEqual(hotel.description, self.description)
+        self.assertEqual(hotel.photo.read(),img_content)
 
     def tearDown(self):
         pass

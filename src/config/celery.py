@@ -1,7 +1,7 @@
 import os
 from celery.schedules import crontab
 from celery import Celery
-
+from celery import shared_task
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
@@ -14,10 +14,13 @@ app = Celery('config')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Load task modules from all registered Django apps.
-app.autodiscover_tasks()
+app.autodiscover_tasks([
+    "config.tasks",
+    "booking_app.tasks"
+])
 
 
-from celery import shared_task
+
 
 @shared_task
 def debug_task(second: int):

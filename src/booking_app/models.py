@@ -93,7 +93,7 @@ class Hotel(models.Model):
     stars = models.IntegerField(null=True, verbose_name="количество звёзд",validators=[validate_hotel_stars])
     rating = models.FloatField(null=True, verbose_name="рейтинг")
     description = models.CharField(max_length=255, null=True, verbose_name="описание")
-    photo = models.ImageField(null=True,verbose_name="фото",upload_to="hotels_photo/")
+    photo = models.ImageField(null=True,verbose_name="фото",upload_to="hotels_photo/",blank=True)
     owners = models.ForeignKey(
         to="HotelOwner",
         on_delete=models.SET_NULL,
