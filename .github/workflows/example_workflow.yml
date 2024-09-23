@@ -1,12 +1,20 @@
-name: Demo Workflow
+name: Environment
 on: workflow_dispatch
+env:
+  DJANGO_ENV: production
 jobs:
-  print:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_ENV: job prod
+    steps:
+      - name: Print Node env build
+        run: |
+          echo "${{ env.DJANGO_ENV }}"
+  deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Print to console
-        run: echo Hello GH Actions!
-      - name: Print a few lines
+      - name: Print env deploy
         run: |
-          echo First line!
-          echo Second line!
+          echo "${{ env.DJANGO_ENV }}"
