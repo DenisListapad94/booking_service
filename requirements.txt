@@ -1,23 +1,23 @@
-django==4.2.14
-python-dotenv==1.0.1
-psycopg2-binary==2.9.9
-ipython==8.24.0
-django-extensions==3.2.3
-pillow==10.3.0
-Faker==25.0.1
-django-debug-toolbar==4.3.0
-django-crispy-forms==2.1
-crispy-bootstrap5==2024.2
-djangorestframework==3.15.1
-Markdown==3.6
-django-filter==24.2
-djangorestframework-simplejwt==5.3.1
-djoser==2.2.2
-redis==5.0.5
-celery==5.4.0
-flower==2.0.1
-django-celery-results==2.5.1
-django-celery-beat==2.6.0
+django
+python-dotenv
+psycopg2-binary
+ipython
+django-extensions
+pillow
+Faker
+django-debug-toolbar
+django-crispy-forms
+crispy-bootstrap5
+djangorestframework
+Markdown
+django-filter
+djangorestframework-simplejwt
+djoser
+redis
+celery
+flower
+django-celery-results
+django-celery-beat
 
 
 
