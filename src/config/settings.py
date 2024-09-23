@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY","django-insecure-6y)@%3s_hva4cz)r1%^b)hj114n5#t0$h6jpfvt^r-p6wxj0g9")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = os.environ.get("DEBUG",True)
 
 ALLOWED_HOSTS = ["localhost","127.0.0.1","testserver"]
 
@@ -106,13 +106,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "USER": os.environ.get("DB_USER"),
-        "NAME": os.environ.get("DB_NAME"),
-        "HOST": os.environ.get("DB_HOST"),
-        "PORT": os.environ.get("DB_PORT"),
-        "PASSWORD": os.environ.get("DB_PASS"),
+        "USER": os.environ.get("DB_USER","denis"),
+        "NAME": os.environ.get("DB_NAME","django_service_db"),
+        "HOST": os.environ.get("DB_HOST","localhost"),
+        "PORT": os.environ.get("DB_PORT",5432),
+        "PASSWORD": os.environ.get("DB_PASS",1234),
         "TEST": {
-            "NAME": os.environ.get("TEST_DATABASE_NAME"),
+            "NAME": os.environ.get("TEST_DATABASE_NAME","mytestdatabase"),
         },
 
     },
