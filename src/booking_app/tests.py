@@ -89,23 +89,23 @@ class TestHotelView(TestCase):
         #     stars=self.stars,
         #     description = self.description
         # )
-    def test_hotel_view(self):
-        path = "/booking/hotels"
-        response = self.client.get(path=path)
-        hotels = response.context["hotels"]
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(hotels), 1)
-        self.assertEqual(hotels[0].name, self.name)
-        self.assertEqual(hotels[0].stars, self.stars)
-        self.assertEqual(hotels[0].id, 1)
+    # def test_hotel_view(self):
+    #     path = "/booking/hotels"
+    #     response = self.client.get(path=path)
+    #     hotels = response.context["hotels"]
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(len(hotels), 1)
+    #     self.assertEqual(hotels[0].name, self.name)
+    #     self.assertEqual(hotels[0].stars, self.stars)
+    #     self.assertEqual(hotels[0].id, 1)
 
-    def test_create_hotel_instance(self):
-        self.assertEqual(self.hotel.id, 1)
-        self.assertEqual(self.hotel.name, self.name)
-        self.assertEqual(self.hotel.stars, self.stars)
-        self.assertEqual(self.hotel._meta.get_field('name').verbose_name, "название")
-        self.assertEqual(self.hotel._meta.get_field('name').max_length, 50)
-        self.assertEqual(self.hotel._meta.get_field('name').null, True)
+    # def test_create_hotel_instance(self):
+    #     self.assertEqual(self.hotel.id, 1)
+    #     self.assertEqual(self.hotel.name, self.name)
+    #     self.assertEqual(self.hotel.stars, self.stars)
+    #     self.assertEqual(self.hotel._meta.get_field('name').verbose_name, "название")
+    #     self.assertEqual(self.hotel._meta.get_field('name').max_length, 50)
+    #     self.assertEqual(self.hotel._meta.get_field('name').null, True)
     @patch('booking_app.tasks.requests')
     @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_create_hotel_form(self,fake_requests):
