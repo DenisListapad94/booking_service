@@ -8,8 +8,8 @@ from .validators import validate_hotel_stars
 
 class User(models.Model):
     SEX_PERSON = {
-        "m": "male",
-        "f": "female",
+        ("m", "male"),
+        ("f", "female")
     }
     first_name = models.CharField(max_length=30, null=True)
     last_name = models.CharField(max_length=50, null=True)
