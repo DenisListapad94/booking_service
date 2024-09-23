@@ -9,12 +9,15 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ['3.9', '3.11']
-
+        strategy:
+          matrix:
+            python-version: [ '3.8', '3.9','3.10','3.11' ]
+            os-version: [ 'ubuntu-latest','windows-latest']
+    runs-on: ${{ matrix.os-version}}
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
